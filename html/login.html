@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login-ifunny-reloaded</title>
+    <style>
+        div{
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div>
+        <form onsubmit="redirect()">
+            userName: <input type="text" name="usrName"><br/>
+            e-mail: <input type="email" name="emusr"><br/>
+            pass: <input type="password" name="passurs"><br/>
+            <input type="submit" value="send">
+        </form>
+    </div>
+    
+    <script>
+            function redirect(){
+                location.replace('/main')
+            }
+        </script>
+</body>
+</html>
