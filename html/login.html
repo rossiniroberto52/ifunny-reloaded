@@ -13,18 +13,13 @@
 </head>
 <body>
     <div>
-        <form onsubmit="redirect()">
-            userName: <input type="text" name="usrName"><br/>
-            e-mail: <input type="email" name="emusr"><br/>
-            pass: <input type="password" name="passurs"><br/>
-            <input type="submit" value="send">
-        </form>
+        <input type="button" value="mandar" onclick="redirect()">
     </div>
     
     <script>
-            function redirect(){
-                location.replace('/main')
-            }
-        </script>
+          function redirect(){
+              location.replace('/main')
+          }
+    </script>
 </body>
 </html>
