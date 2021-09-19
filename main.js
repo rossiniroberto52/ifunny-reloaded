@@ -2,6 +2,7 @@ const express = require('express')
 const port = 3100
 const multer = require('multer')
 const path = require('path')
+const mysql = require('mysql')
 
 const storage =  multer.diskStorage({
     destination: (req, file, cb) => {
@@ -16,6 +17,29 @@ const storage =  multer.diskStorage({
 const upload = multer({storage: storage})
 
 const app = express();
+
+const con = mysql.createConnection({
+    host: 'localhost',
+    user: 'admin',
+    password: 'rossini135',
+    database: 'admins'
+});
+
+con.connect((err) => {
+    if (err) {
+        console.log('Erro connecting to database...', err)
+        return
+    }
+    console.log('Connection established!')
+})
+
+con.end((err) => {
+    if(err) {
+        console.log('Erro to finish connection...', err)
+        return 
+    }
+    console.log('The connection was finish...')
+})
 
 app.get('/', (req,res) => {
     res.redirect('/main')
