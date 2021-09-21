@@ -20,6 +20,8 @@
     <h1>bem Vindo aõ ifunny reloaded</h1> 
     <input type="button" value="login/register" onclick="registerrd()">
     <input type="button" value="mandar memes" onclick="sendmeme()">
+    <input type="button" value="mandar postagens" onclick="posts()">
+    <input type="button" value="posts" onclick="allposts()">
 
     <script>
         
@@ -28,6 +30,12 @@
         }
         function sendmeme(){
             location.replace('/upload')
+        }
+        function posts(){
+            location.replace('/cad')
+        }
+        function allposts(){
+            location.replace('/home')
         }
     </script>
 </body>
