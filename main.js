@@ -1,3 +1,4 @@
+//modulos e consts
 const express = require('express')
 const port = 3100
 const multer = require('multer')
@@ -6,8 +7,24 @@ const handlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
 const admin = require('./routes/admin')
 const mongoose = require("mongoose")
+const session = require('express-session')
+const flash = require('connect-flash')
 
 //configs
+const app = express();
+
+app.use(session({
+    secret: "meunomeerossiniesouoprogramadordestaosta",
+    resave: true,
+    saveUninitialized: true
+}))
+app.use(flash())
+//middleware
+app.use((req,res,next) => {
+    res.locals.success_msg = req.flash("success_msg")
+    res.locals.error_msg = req.flash("error_msg")
+    next()
+})
 const storage =  multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'Images')
@@ -20,7 +37,7 @@ const storage =  multer.diskStorage({
 
 const upload = multer({storage: storage})
 
-const app = express();
+
     //Handlebars
     app.engine('handlebars', handlebars({defaultLayout: 'main'}))
     app.set('view engine', 'handlebars')
