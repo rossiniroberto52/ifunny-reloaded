@@ -4,8 +4,10 @@ const multer = require('multer')
 const path = require('path')
 const handlebars = require('express-handlebars')
 const bodyParser = require('body-parser')
-const Post = require('./models/Post')
+const admin = require('./routes/admin')
+const mongoose = require("mongoose")
 
+//configs
 const storage =  multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'Images')
@@ -19,63 +21,22 @@ const storage =  multer.diskStorage({
 const upload = multer({storage: storage})
 
 const app = express();
-
-//configs
+    //Handlebars
     app.engine('handlebars', handlebars({defaultLayout: 'main'}))
     app.set('view engine', 'handlebars')
+    //body-Parser
     app.use(bodyParser.urlencoded({extended:false}))
     app.use(bodyParser.json())
-
-app.get('/', (req,res) => {
-    res.redirect('/main')
-})
-
-app.get('/main', (req,res) => {
-    res.sendFile(__dirname + '/html/index.html')
-})
-
-app.get('/cad', (req,res) => {
-    
-    res.render('formulario')
-})
-
-app.post('/add', (req,res) => {
-    Post.create({
-        titulo: req.body.titulo,
-        conteudo: req.body.conteudo
-    }).then(()=>{
-        res.send(res.redirect('/main'))
-    }).catch((erro)=>{
-        res.send('um erro apareceu! => ' + erro)
-    })
-})
-
-app.get('/home', (req,res) => {
-    Post.findAll({horder: [['id', 'DESC']]}).then((posts) => {
-        res.render('home', {posts: posts})
-    })
-})
-
-app.get('/deletar/:id', (req,res) => {
-    Post.destroy({where: {'id': req.params.id}}).then(()=>{
-        res.send('sucesso!')
-    }).catch((erro)=>{
-        res.send('postagem inexistente!')
-    })
-})
-
-app.get('/login', (req,res) => {
-    res.sendFile(__dirname + '/html/login.html')
-})
-
-app.get('/upload', (req,res) => {
-    app.set('view engine', "ejs");
-    res.render("upload");
-});
-
-app.post('/upload', upload.single('image'), (req,res) => {
-    res.send('meme upload', res.redirect('/main'));
-    
-});
-
-app.listen(port, () => {console.log('[+]server started on port 3100')})
+    //mongoose
+        mongoose.Promise = global.Promise;
+        mongoose.connect("mongodb://localhost/ifunny2").then(() => {
+            console.log('[+]mongo connected')
+        }).catch((err) => {
+            console.log('[-]fail to connect mongo db!, error => ' + err)
+        })
+    //public
+        app.use(express.static(path.join(__dirname,"public")))
+//rotas
+    app.use('/admin', admin)
+//server listen
+app.listen(port, () => {console.log('[+]server started on port 3100')});
