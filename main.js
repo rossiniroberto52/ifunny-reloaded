@@ -39,7 +39,12 @@ const upload = multer({storage: storage})
 
 
     //Handlebars
-    app.engine('handlebars', handlebars({defaultLayout: 'main'}))
+    app.engine('handlebars', handlebars({defaultLayout: 'main',
+    runtimeOptions: {
+        allowProtoPropertiesByDefault: true,
+        allowProtoMethodsByDefault: true,
+    },
+}))
     app.set('view engine', 'handlebars')
     //body-Parser
     app.use(bodyParser.urlencoded({extended:false}))
