@@ -11,6 +11,9 @@ const session = require('express-session')
 const flash = require('connect-flash')
 require("./models/Posts")
 const Post = mongoose.model("posts")
+require("./models/Category")
+const Category = mongoose.model("categorys")
+const users = require("./routes/user")
 
 //configs
 const app = express();
@@ -85,9 +88,41 @@ const upload = multer({storage: storage})
         })
     })
 
+    app.get('/category', (req,res) => {
+        Category.find().then((category) => {
+            res.render("category/index", {category:category})
+        }).catch((err) => {
+            req.flash("error_msg", "inter error to list categorys")
+            res.redirect("/")
+        })
+    })
+
+    app.get("/category/:slug", (req,res) =>{
+        Category.findOne({slug: req.params.slug}).then((category) => {
+            if(category){
+                Post.find({category: category._id}).then((post) => {
+                    res.render("category/post", {post: post, category: category})
+                }).catch((err) => {
+                    req.flash("error_msg", "error to list posts!")
+                    console.log("error to render category => " + err)
+                    res.redirect("/")
+                })
+            }else{
+                req.flash("error_msg", "category not found!.")
+                res.redirect("/")
+            }
+        }).catch((err) => {
+            req.flash("error_msg", "internal error!")
+            console.log('error => ' + err)
+            res.redirect('/')
+        })
+    })
+    
     app.get("/404", (req,res)=>{
         res.send("error: 404!")
     })
+
+    app.use("/users", users)
     
     app.use('/admin', admin)
 //server listen
