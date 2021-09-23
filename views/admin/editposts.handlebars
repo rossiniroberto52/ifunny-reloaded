@@ -5,26 +5,27 @@
 {{/each}}
 <div class="card">
     <div class="card-body">
-        <form action="/admin/posts/new" method="post">
-            <h4>New Post: </h4>
+        <form action="/admin/posts/edit" method="post">
+            <h4>Edit Post: </h4>
+            <input type="hidden" name="id" value="{{post._id}}">
             <label for="title">title: </label>
-                <input type="text" name="title" class="form-control">
+                <input type="text" name="title" class="form-control" value="{{post.title}}">
             <label for="slug">slug: </label>
-                <input type="text" name="slug" class="form-control">
+                <input type="text" name="slug" class="form-control" value="{{post.slug}}">
             <label for="description">post description: </label>
-                <input type="text" name="description" class="form-control">
+                <input type="text" name="description" class="form-control" value="{{post.description}}">
             <label for="content">content: </label>
-                <textarea name="content" class="form-control"></textarea><br/>
+                <textarea name="content" class="form-control">{{post.content}}</textarea><br/>
             <label for="category">category: </label>
                 <select name="category" class="custom-select">
-                    {{#each categorys}}
+                    {{#each category}}
                             <option value="{{_id}}">{{name}}</option>>
                     {{else}}
                             <option value="0">not category registered</option>
                     {{/each}}
             </select>
             <br/>
-            <button class="btn btn-success mt-4" type="submit">create post</button>
+            <button class="btn btn-success mt-4" type="submit">edit post</button>
         </form>
     </div>
 </div>

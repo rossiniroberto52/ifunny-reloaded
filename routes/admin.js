@@ -91,8 +91,14 @@ router.post("/category/delet", (req,res) => {
     })
 })
 
-router.get('/posts', (req,res) => {
-    res.render("admin/posts")
+router.get('/posts', (req,res) => { 
+    Posts.find().populate("category").sort({data:"desc"}).then((posts) => {
+        res.render("admin/posts", {posts:posts})
+    }).catch((err) => {
+        req.flash("error_msg", "has ben error to load posts!")
+        console.log("error with load posts found => " + err)
+        res.redirect("/admin")
+    })
 })
 
 router.get("/posts/add", (req,res) =>{
@@ -136,4 +142,46 @@ router.post("/posts/new", (req,res) => {
     }
 
 })
+
+router.get('/posts/edit/:id', (req,res) => {
+    Posts.findOne({_id: req.params.id}).then((post) =>{
+        Category.find().then((category) => {
+            res.render("admin/editposts", {category: category, post: post})
+        }).catch((err) => {
+            req.flash("error_msg", "error to list categorys!")
+            console.log("error to list categorys => " + err)
+            res.redirect("/admin/posts")
+        })
+
+    }).catch((err) => {
+        req.flash("error_msg", "error to load update form!")
+        console.log("error to load editon form => " +err)
+        res.redirect("/admin/posts")
+    })
+
+})
+
+
+router.post("/posts/edit", (req,res) => {
+    Posts.findOneAndUpdate({id: req.body.id}, {title: req.body.title, slug: req.body.slug, description: req.body.description, content: req.body.content, category: req.body.category}, {lean: true}).then((post) => {
+            req.flash("success_msg","post saved!")
+            res.redirect("/admin/posts")
+    }).catch((err) => {
+        req.flash("error_msg", "error to edit post")
+        console.log("error => " +err)
+        res.redirect("/admin/posts")
+    })
+})
+
+
+router.get("/posts/delet/:id" ,(req,res) => {
+    Posts.deleteOne({_id: req.params.id}).then(() => {
+        req.flash("success_msg", "post deleted")
+        res.redirect("/admin/posts")
+    }).catch((err) => {
+        req.flash("error_msg", "intern error")
+        res.redirect("/admin/posts")
+    })
+})
+
 module.exports = router

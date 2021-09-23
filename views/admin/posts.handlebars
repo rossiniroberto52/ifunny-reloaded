@@ -1,3 +1,19 @@
 <h2>Posts list: </h2>
 <hr>
 <a href="/admin/posts/add"><button class="btn btn-success">new Post</button></a>
+
+
+{{#each posts}}
+    <div class="card mt-4">
+        <div class="card-body">
+            <h4>{{title}}</h4>
+            <p>{{description}}</p>
+            <small>created at: {{data}}</small><br/>
+            <small>category: {{category.name}}</small><br/>
+            <a href="/admin/posts/edit/{{_id}}"><button class="btn btn-success mt-2">edit post</button></a><br/>
+            <a href="/admin/posts/delet/{{_id}}"><button class="btn btn-danger mt-2">delete post</button></a>
+        </div>
+    </div>
+{{else}}
+    <p>dont have any registry of posts!</p>
+{{/each}}

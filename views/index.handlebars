@@ -1,0 +1,28 @@
+<div class="jumbotron">
+  <h1 class="display-4">bem vindo ao Ifunny2</h1>
+  <p class="lead">apenas um remake do app</p>
+  <hr class="my-4">
+  <p>teste.</p>
+  <p class="lead">
+    <a class="btn btn-primary btn-lg" href="#" role="button">Criar um conta agora</a>
+  </p>
+</div>
+<hr>
+
+<h2>Posts Recentes: </h2>
+
+
+{{#each posts}}
+<div class="card mt-4">
+    <div class="card-body">
+        <h3>{{title}}</h3>
+        <p>{{description}}</p>
+        <a href="/post/{{slug}}"><button class="btn btn-success">read more</button></a>
+        <hr>
+        <small>categoria: {{category.name}}</small><br/>
+        <small>data de criação: {{data}}</small>
+    </div>
+</div>
+{{else}}
+    <h5>nenhum post :(</h5>
+{{/each}}

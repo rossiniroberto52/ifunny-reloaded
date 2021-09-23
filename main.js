@@ -9,6 +9,8 @@ const admin = require('./routes/admin')
 const mongoose = require("mongoose")
 const session = require('express-session')
 const flash = require('connect-flash')
+require("./models/Posts")
+const Post = mongoose.model("posts")
 
 //configs
 const app = express();
@@ -59,6 +61,34 @@ const upload = multer({storage: storage})
     //public
         app.use(express.static(path.join(__dirname,"public")))
 //rotas
+    app.get("/", (req,res) => {
+        Post.find().populate("category").sort({data: "desc"}).then((posts) => {
+            res.render("index", {posts: posts})
+        }).catch((err) => {
+            req.flash("error_msg", "intern error")
+            res.redirect("/404")
+        })
+        
+    })
+
+    app.get("/post/:slug", (req,res) => {
+        Post.findOne({slug: req.params.slug}).then((post) => {
+            if(post){
+                res.render("post/index", {post: post})
+            }else{
+                req.flash("error_msg","this post not exist!")
+                req.redirect("/")
+            }
+        }).catch((err) => {
+            req.flash("error_msg", "inter error!")
+            res.redirect("/")
+        })
+    })
+
+    app.get("/404", (req,res)=>{
+        res.send("error: 404!")
+    })
+    
     app.use('/admin', admin)
 //server listen
 app.listen(port, () => {console.log('[+]server started on port 3100')});

@@ -10,7 +10,7 @@ const Posts = new Schema({
         type:String,
         required: true
     },
-    descripton:{
+    description :{
         type:String,
         required: true
     },
