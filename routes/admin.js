@@ -4,13 +4,11 @@ const router = express.Router()
 const mongoose = require('mongoose')
 require("../models/Category")
 const Category = mongoose.model("categorys")
+require('../models/Posts')
+const Posts = mongoose.model("posts")
 
 router.get('/', (req,res) => {
     res.render("admin/index")
-})
-
-router.get('/posts', (req,res) =>{
-    res.send("posts page")
 })
 
 router.get('/category', (req,res) => {
@@ -73,19 +71,69 @@ router.get("/category/edit/:id", (req,res) => {
 })
 
 router.post("/category/edit", (req,res) => {
-    Category.findOneAndUpdate({_id: req.body.id}, {name: req.body.name, slug: req.body.slug}).lean().then((category) => {
-        category.lean().then(() => {
-            req.flash("success_msg", "Category edited!")
-            res.redirect("/admin/category")
-        }).catch((err) => {
-            req.flash("error_msg", "intern error to edit category!")
-            console.log('error to edit category => ' + err)
-            res.redirect("/admin/category")
-        })
+    Category.findOneAndUpdate({_id: req.body.id}, {name: req.body.name, slug: req.body.slug}, {lean: true}).then(() => {
+        req.flash("success_msg", "category edited!")
+        res.redirect("/admin/category")
     }).catch((err) => {
         req.flash("error_msg", "error to edit category")
-        console.log('=> ' + err)
+        console.log('error => ' + err)
         res.redirect("/admin/category")
     })
+})
+
+router.post("/category/delet", (req,res) => {
+    Category.remove({_id: req.body.id}).then(() => {
+        req.flash("success_msg", "deleted category!")
+        res.redirect("/admin/category")
+    }).catch((err) => {
+        req.flash("error_msg", "error to delete category")
+        res.redirect("/admin/category")
+    })
+})
+
+router.get('/posts', (req,res) => {
+    res.render("admin/posts")
+})
+
+router.get("/posts/add", (req,res) =>{
+    Category.find().then((categorys) =>{
+        res.render("admin/postsadd", {categorys: categorys})
+    }).catch((err) => {
+        console.log("error => " + err)
+        req.flash("error_msg", "error to load form")
+    })
+    
+})
+
+
+router.post("/posts/new", (req,res) => {
+
+    var erros = []
+
+    if(req.body.category == "0"){
+        erros.push({text: "invalid category create a category"})
+    }
+
+    if(erros.length > 0){
+        res.render("admin/postsadd", {erros: erros})
+    }else{
+        const newPost = {
+            title: req.body.title,
+            description: req.body.description,
+            content: req.body.content,
+            category: req.body.category,
+            slug: req.body.slug
+        }
+
+        new Posts(newPost).save().then(() => {
+            req.flash("success_msg", "post has ben created")
+            res.redirect("/admin/posts")
+        }).catch((err) => {
+            req.flash("error_msg", "error to save post")
+            console.log('error to save post => ' + err)
+            res.redirect("/admin/posts")
+        })
+    }
+
 })
 module.exports = router

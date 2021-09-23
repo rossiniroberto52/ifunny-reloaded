@@ -9,8 +9,13 @@
             <small>slug: {{{slug}}}</small><br/>
             <small>Creation data: {{date}}</small><br/>
             <a href="/admin/category/edit/{{_id}}"><button class="btn btn-success mt-4">Edit category</button></a>
+            <form action="/admin/category/delet" method="POST">
+                <input type="hidden" name="id" value="{{_id}}">
+                <button type="submit" class="btn btn-danger mt-2">Delet category</button>
+            </form>
         </div>
     </div>
 {{else}}
+    <h4 class="mt-3">don't have any registry category!</h4>
 
 {{/each}}
