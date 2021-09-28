@@ -1,4 +1,4 @@
-//modulos e consts
+//modulos e requires
 const express = require('express')
 const port = 3100
 const multer = require('multer')
@@ -14,16 +14,24 @@ const Post = mongoose.model("posts")
 require("./models/Category")
 const Category = mongoose.model("categorys")
 const users = require("./routes/user")
+const passport = require('passport')
+require("./config/auth")(passport)
 
 //configs
 const app = express();
 
+//session config
 app.use(session({
-    secret: "meunomeerossiniesouoprogramadordestaosta",
+    secret: "menis",
     resave: true,
     saveUninitialized: true
 }))
+//passport config
+app.use(passport.initialize())
+app.use(passport.session())
+//flash config
 app.use(flash())
+
 //middleware
 app.use((req,res,next) => {
     res.locals.success_msg = req.flash("success_msg")
