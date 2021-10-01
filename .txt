@@ -16,3 +16,20 @@ async register() {
 bcrypt.hashSync(req.body.password, salt)
             console.log(req.body.password)
             NewUser.save()
+
+
+
+
+//outro
+const user = User.find(email);
+            if(!user)return done(null, false);
+
+                User.find({password: User.find(password)}).then(returnData => {
+                    console.log('ok! deu tudo certo')
+                    const isValid = bcrypt.compareSync({password: password});
+                    if(!isValid){return done(null, true)};
+                    return done(null, user);
+                }).catch((err) => {
+                    console.log('ops... ' +err)
+                })
+            

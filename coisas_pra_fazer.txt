@@ -1,0 +1,14 @@
+coisas para terminar no site:
+[x]register
+[]design
+[]login
+[x]posts
+[]posts com img's
+[x]categorias
+[]verificação
+... mais coisas vindo no futuro!
+
+nome do site: (menis)(não definido 100%)
+
+hospedagem: github.io
+url: não definida
