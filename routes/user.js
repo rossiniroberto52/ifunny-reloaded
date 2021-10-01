@@ -1,15 +1,17 @@
 const express = require('express')
 const router= express.Router()
 const mongoose = require('mongoose')
-require("../models/user")
-const User = mongoose.model("user")
 const bcrypt = require('bcrypt');
 const saltRounds = 10;
 const passport = require('passport')
+require('../models/user')
+const User = mongoose.model("user")
+require("../config/auth")
 
 router.get("/register", (req,res) => {
     res.render("users/register")
 })
+
 
 router.post("/register", (req,res) => {
     var erros = []
@@ -54,16 +56,18 @@ router.post("/register", (req,res) => {
     }
 })
 
-router.get("/login", (req,res) => {
-    res.render("users/login")
+router.get("/login", (req,res, next) => {
+    if(req.query.fail)
+        res.render("users/login", {message: "pass and/or user invalid!"});
+    else
+        res.render('users/login', {message: null});
 })
 
-router.post("/login", (req,res,next) => {
-    passport.authenticate("local", {
-        successRedirect: "/",
-        failureRedirect: "/users/login",
-        failureFlash: true
-    })(req,res,next)
-})
+router.post('/login', passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login?fail=true'
+}))
+
+
 
 module.exports = router
