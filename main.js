@@ -14,22 +14,25 @@ const Post = mongoose.model("posts")
 require("./models/Category")
 const Category = mongoose.model("categorys")
 const users = require("./routes/user")
-const passport = require('passport')
-require("./config/auth")(passport)
+const passport= require('passport')
+const { cookie } = require('express/lib/response')
+require("./config/auth")(passport);
+const Secret = require('./secret.json')
 
 //configs
 const app = express();
 
 //session config
 app.use(session({
-    secret: "menis",
-    resave: true,
-    saveUninitialized: true
+    secret: Secret.SECRET,
+    resave: false,
+    saveUninitialized: false,
+    cookie: {maxAge: 30 * 60 * 1000}
 }))
 //passport config
-app.use(passport.initialize())
-app.use(passport.session())
-//flash config
+app.use(passport.initialize());
+app.use(passport.session());
+//flash config  
 app.use(flash())
 
 //middleware
@@ -38,6 +41,7 @@ app.use((req,res,next) => {
     res.locals.error_msg = req.flash("error_msg")
     next()
 })
+
 const storage =  multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'Images')
